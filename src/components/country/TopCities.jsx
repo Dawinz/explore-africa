@@ -1,19 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { extractCapitals } from '../../services/countryData';
-import { FaCity } from 'react-icons/fa';
+import { getCitiesForCountry } from '../../services/cityData';
+import { getCityImages } from '../../services/countryImages';
 
-const CityCard = ({ city, countryName, index }) => {
-  // Use gradient backgrounds as placeholders
-  const gradients = [
-    'from-orange-500 to-red-600',
-    'from-blue-500 to-purple-600',
-    'from-green-500 to-teal-600',
-    'from-yellow-500 to-orange-600',
-    'from-pink-500 to-rose-600',
-  ];
-
-  const gradient = gradients[index % gradients.length];
+const CityCard = ({ city, countryName, imageUrl, index }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const defaultImage = 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=800&h=600&fit=crop';
 
   return (
     <motion.div
@@ -22,11 +14,20 @@ const CityCard = ({ city, countryName, index }) => {
       transition={{ delay: index * 0.1, duration: 0.5 }}
       className="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300"
     >
-      <div className="relative h-64 overflow-hidden">
-        <div className={`absolute inset-0 bg-gradient-to-br ${gradient} group-hover:scale-110 transition-transform duration-500`} />
-        <div className="absolute inset-0 flex items-center justify-center opacity-20">
-          <FaCity className="text-white text-8xl" />
-        </div>
+      <div className="relative h-64 overflow-hidden bg-gray-200">
+        {!imageLoaded && (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-200">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        )}
+        <img
+          src={imageUrl || defaultImage}
+          alt={`${city}, ${countryName}`}
+          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          loading="lazy"
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageLoaded(true)}
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <h3 className="text-2xl font-bold text-white mb-1">{city}</h3>
@@ -38,33 +39,33 @@ const CityCard = ({ city, countryName, index }) => {
 };
 
 const TopCities = ({ country }) => {
-  // Get capital(s) and create a list of major cities
-  const capitals = extractCapitals(country);
-  const capitalsList = capitals.split(', ');
+  const [cities, setCities] = useState([]);
+  const [cityImages, setCityImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // For demonstration, we'll show capital(s) and add some generic city names
-  const getMajorCities = () => {
-    const cities = [...capitalsList];
+  useEffect(() => {
+    const loadCitiesAndImages = async () => {
+      if (!country) return;
 
-    // Add other major cities (you can enhance this with real data later)
-    if (cities.length < 5) {
-      // These are placeholders - in a real app, you'd have actual city data
-      const additionalCities = [
-        'Second largest city',
-        'Port city',
-        'Industrial hub',
-        'Cultural center'
-      ];
+      // Get real cities for the country
+      const realCities = getCitiesForCountry(country);
+      setCities(realCities);
 
-      while (cities.length < Math.min(5, capitalsList.length + 4)) {
-        cities.push(additionalCities[cities.length - capitalsList.length]);
+      // Fetch real images for each city
+      try {
+        const images = await getCityImages(realCities, country.name);
+        setCityImages(images);
+      } catch (error) {
+        console.error('Error loading city images:', error);
+        // Set default images as fallback
+        setCityImages(realCities.map(() => 'https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?w=800&h=600&fit=crop'));
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
-    return cities.slice(0, 5);
-  };
-
-  const cities = getMajorCities();
+    loadCitiesAndImages();
+  }, [country]);
 
   return (
     <section className="py-12 bg-gray-50">
@@ -84,16 +85,23 @@ const TopCities = ({ country }) => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {cities.map((city, index) => (
-              <CityCard
-                key={index}
-                city={city}
-                countryName={country.name}
-                index={index}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {cities.map((city, index) => (
+                <CityCard
+                  key={`${city}-${index}`}
+                  city={city}
+                  countryName={country.name}
+                  imageUrl={cityImages[index]}
+                  index={index}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

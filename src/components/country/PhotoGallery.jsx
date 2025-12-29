@@ -1,20 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaMountain, FaPaw, FaCity, FaUsers, FaLandmark, FaTree, FaStore, FaUmbrellaBeach, FaDrum } from 'react-icons/fa';
+import { getCountryGalleryImages } from '../../services/countryImages';
 
 const PhotoGallery = ({ country }) => {
-  // Generate diverse gallery themes with icons and gradients
-  const galleryThemes = [
-    { theme: 'Landscape', icon: FaMountain, gradient: 'from-green-600 to-teal-700' },
-    { theme: 'Wildlife', icon: FaPaw, gradient: 'from-amber-600 to-orange-700' },
-    { theme: 'City Skyline', icon: FaCity, gradient: 'from-blue-600 to-indigo-700' },
-    { theme: 'Culture & People', icon: FaUsers, gradient: 'from-purple-600 to-pink-700' },
-    { theme: 'Architecture', icon: FaLandmark, gradient: 'from-red-600 to-rose-700' },
-    { theme: 'Nature', icon: FaTree, gradient: 'from-emerald-600 to-green-700' },
-    { theme: 'Markets', icon: FaStore, gradient: 'from-yellow-600 to-amber-700' },
-    { theme: 'Beaches', icon: FaUmbrellaBeach, gradient: 'from-cyan-600 to-blue-700' },
-    { theme: 'Traditional', icon: FaDrum, gradient: 'from-orange-600 to-red-700' }
-  ];
+  const galleryThemes = getCountryGalleryImages(country.name);
+
+  const images = galleryThemes.map((theme, index) => ({
+    url: theme.url,
+    alt: `${country.name} - ${theme.name}`,
+    theme: theme.name,
+    index: index
+  }));
 
   return (
     <section className="py-12 bg-white">
@@ -35,21 +31,23 @@ const PhotoGallery = ({ country }) => {
           </motion.div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {galleryThemes.map((item, index) => (
+            {images.map((image) => (
               <motion.div
-                key={index}
+                key={image.index}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.05, duration: 0.4 }}
+                transition={{ delay: image.index * 0.05, duration: 0.4 }}
                 className="group relative overflow-hidden rounded-xl aspect-[4/3] shadow-md hover:shadow-xl transition-all duration-300"
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} group-hover:scale-110 transition-transform duration-500`} />
-                <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                  <item.icon className="text-white text-7xl" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-100 group-hover:opacity-100 transition-opacity duration-300">
+                <img
+                  src={image.url}
+                  alt={image.alt}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <div className="absolute bottom-0 left-0 right-0 p-4">
-                    <p className="text-white font-medium">{item.theme}</p>
+                    <p className="text-white font-medium">{image.theme}</p>
                   </div>
                 </div>
               </motion.div>
@@ -63,7 +61,7 @@ const PhotoGallery = ({ country }) => {
             className="mt-8 text-center"
           >
             <p className="text-sm text-gray-500">
-              Gallery showcasing the beauty and diversity of {country.name}
+              Images powered by Unsplash - showcasing the beauty of {country.name}
             </p>
           </motion.div>
         </div>

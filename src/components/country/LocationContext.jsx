@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaMapMarkerAlt, FaGlobe, FaCompass } from 'react-icons/fa';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+// Fix for default marker icons in React-Leaflet
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
+});
 
 const LocationContext = ({ country }) => {
   const getLocationInfo = () => {
@@ -91,22 +102,49 @@ const LocationContext = ({ country }) => {
             <h3 className="text-xl font-bold text-gray-800 mb-4">Strategic Position</h3>
             <p className="text-gray-700 leading-relaxed mb-6">{getStrategicPosition()}</p>
 
-            {/* Map placeholder */}
-            <div className="relative h-80 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg overflow-hidden border border-gray-200">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <FaMapMarkerAlt className="text-6xl text-primary/30 mx-auto mb-4" />
-                  <p className="text-gray-500 font-medium">
-                    {country.name} - {country.subregion || country.region}
-                  </p>
-                  {country.latlng && country.latlng.length === 2 && (
-                    <p className="text-sm text-gray-400 mt-2">
-                      {country.latlng[0].toFixed(4)}°, {country.latlng[1].toFixed(4)}°
+            {/* Interactive Map */}
+            {country.latlng && country.latlng.length === 2 ? (
+              <div className="relative h-80 rounded-lg overflow-hidden border border-gray-200">
+                <MapContainer
+                  center={[country.latlng[0], country.latlng[1]]}
+                  zoom={6}
+                  style={{ height: '100%', width: '100%', zIndex: 0 }}
+                  scrollWheelZoom={true}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <Marker position={[country.latlng[0], country.latlng[1]]}>
+                    <Popup>
+                      <div className="text-center">
+                        <strong>{country.name}</strong>
+                        <br />
+                        {country.capital && country.capital.length > 0 && (
+                          <>
+                            Capital: {country.capital[0]}
+                            <br />
+                          </>
+                        )}
+                        {country.subregion || country.region}
+                      </div>
+                    </Popup>
+                  </Marker>
+                </MapContainer>
+              </div>
+            ) : (
+              <div className="relative h-80 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-lg overflow-hidden border border-gray-200">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-center">
+                    <FaMapMarkerAlt className="text-6xl text-primary/30 mx-auto mb-4" />
+                    <p className="text-gray-500 font-medium">
+                      {country.name} - {country.subregion || country.region}
                     </p>
-                  )}
+                    <p className="text-sm text-gray-400 mt-2">Map data unavailable</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </motion.div>
         </div>
       </div>

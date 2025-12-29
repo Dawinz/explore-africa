@@ -1,116 +1,61 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaGlobeAfrica, FaArrowDown } from 'react-icons/fa';
 
 const Hero = () => {
-  const scrollToCountries = () => {
-    const countriesSection = document.getElementById('countries-section');
-    if (countriesSection) {
-      countriesSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background with gradient overlay - Heritage Exchange colors */}
-      <div className="absolute inset-0 bg-gradient-to-br from-heritage-orange/20 via-heritage-green/20 to-heritage-orange/15">
+    <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+      {/* Background Image */}
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-40"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop&crop=center')`
           }}
         />
-      </div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto">
+      <div className="relative z-10 text-center px-4 max-w-6xl mx-auto py-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Icon */}
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: "easeOut" }}
-            className="mb-8"
-          >
-            <FaGlobeAfrica className="text-6xl md:text-8xl text-primary mx-auto" />
-          </motion.div>
-
           {/* Main heading */}
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold text-gray-800 mb-6 text-shadow"
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+            className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
           >
-            Discover
-            <span className="block bg-gradient-to-r from-heritage-orange to-heritage-green bg-clip-text text-transparent">
-              Africa
-            </span>
+            One Continent.<br />
+            <span className="block mt-2">Infinite Possibilities</span>
           </motion.h1>
 
           {/* Subheading */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-            className="text-xl md:text-2xl lg:text-3xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed"
+            transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+            className="text-lg md:text-xl lg:text-2xl text-gray-200 mb-8 max-w-4xl mx-auto leading-relaxed"
           >
-            Explore 54 nations, diverse cultures, and breathtaking landscapes
-            <br />
-            <span className="text-lg md:text-xl text-gray-500 mt-2 block">
-              Powered by <a 
-                href="https://theheritageexchange.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-primary hover:text-secondary transition-colors duration-200 font-semibold"
-              >
-                The Heritage Exchange
-              </a>
-            </span>
+            55 nations. 1.4 billion people. The world's largest free trade area. From Cairo to Cape Town, from Lagos to Nairobi – discover how Africa is rewriting its story through innovation, integration, and sustainable growth.
           </motion.p>
 
-          {/* CTA Button */}
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8, duration: 0.6, ease: "easeOut" }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={scrollToCountries}
-            className="btn-primary text-lg px-8 py-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 group"
-          >
-            Explore Countries
-            <FaArrowDown className="ml-2 inline-block group-hover:translate-y-1 transition-transform duration-200" />
-          </motion.button>
-        </motion.div>
-
-        {/* Scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        >
+          {/* CTA Buttons */}
           <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="flex flex-col items-center text-gray-500 cursor-pointer"
-            onClick={scrollToCountries}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
+            className="flex flex-wrap justify-center gap-4"
           >
-            <span className="text-sm mb-2">Scroll to explore</span>
-            <FaArrowDown className="text-xl" />
+            <button className="bg-primary hover:bg-primary/90 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl">
+              Our Services
+            </button>
+            <button className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg transition-all duration-300 backdrop-blur-sm border border-white/20">
+              Contact Us
+            </button>
           </motion.div>
         </motion.div>
       </div>
-
-      {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
-      <div className="absolute top-40 right-20 w-32 h-32 bg-secondary/10 rounded-full blur-xl"></div>
-      <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-accent/10 rounded-full blur-xl"></div>
     </section>
   );
 };

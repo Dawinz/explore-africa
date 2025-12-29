@@ -145,11 +145,34 @@ export const formatCurrency = (currencyObj) => {
 export const createSlug = (countryName) => {
   if (!countryName) return '';
   
-  return countryName
-    .toLowerCase()
+  // Handle special cases for country names
+  const specialCases = {
+    'côte d\'ivoire': 'cote-divoire',
+    'ivory coast': 'cote-divoire',
+    'democratic republic of the congo': 'democratic-republic-of-the-congo',
+    'dr congo': 'democratic-republic-of-the-congo',
+    'republic of the congo': 'republic-of-the-congo',
+    'são tomé and príncipe': 'sao-tome-and-principe',
+    'sao tome and principe': 'sao-tome-and-principe',
+  };
+  
+  const normalized = countryName.toLowerCase().trim();
+  if (specialCases[normalized]) {
+    return specialCases[normalized];
+  }
+  
+  return normalized
+    .replace(/[àáâãäå]/g, 'a')
+    .replace(/[èéêë]/g, 'e')
+    .replace(/[ìíîï]/g, 'i')
+    .replace(/[òóôõö]/g, 'o')
+    .replace(/[ùúûü]/g, 'u')
+    .replace(/[ç]/g, 'c')
+    .replace(/[ñ]/g, 'n')
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
     .trim();
 };
 

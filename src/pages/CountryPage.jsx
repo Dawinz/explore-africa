@@ -8,11 +8,11 @@ import BusinessOpportunities from '../components/country/BusinessOpportunities';
 import TopCities from '../components/country/TopCities';
 import VisaBusinessInfo from '../components/country/VisaBusinessInfo';
 import LocationContext from '../components/country/LocationContext';
-import PhotoGallery from '../components/country/PhotoGallery';
 import CTASections from '../components/country/CTASections';
 import CountryDetails from '../components/country/CountryDetails';
 import RelatedCountries from '../components/country/RelatedCountries';
 import { useCountries } from '../hooks/useCountries';
+import { createSlug } from '../services/countryData';
 
 const CountryPage = () => {
   const { countryName } = useParams();
@@ -26,18 +26,51 @@ const CountryPage = () => {
     window.scrollTo(0, 0);
 
     if (!loading && allCountries.length > 0) {
-      // Find country by matching slug
-      const foundCountry = allCountries.find(c => {
-        const slug = c.name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
-        return slug === countryName.toLowerCase();
+      // Normalize the URL parameter (remove any leading/trailing slashes, decode)
+      const normalizedParam = decodeURIComponent(countryName || '').toLowerCase().trim();
+      
+      // Find country by matching slug - try multiple matching strategies
+      let foundCountry = allCountries.find(c => {
+        if (!c || !c.name) return false;
+        
+        // Strategy 1: Exact slug match
+        const slug = createSlug(c.name);
+        if (slug === normalizedParam) return true;
+        
+        // Strategy 2: Direct name match (case insensitive)
+        const countryNameLower = c.name.toLowerCase().trim();
+        if (countryNameLower === normalizedParam) return true;
+        
+        // Strategy 3: Slug match with normalized param
+        const normalizedSlug = createSlug(normalizedParam);
+        if (slug === normalizedSlug) return true;
+        
+        // Strategy 4: Check if name contains the param or vice versa (for partial matches)
+        if (countryNameLower.includes(normalizedParam) || normalizedParam.includes(countryNameLower)) {
+          // Only match if they're very similar (to avoid false positives)
+          const similarity = Math.min(countryNameLower.length, normalizedParam.length) / 
+                            Math.max(countryNameLower.length, normalizedParam.length);
+          if (similarity > 0.7) return true;
+        }
+        
+        return false;
       });
+
+      // If still not found, try matching by CCA3 code
+      if (!foundCountry && normalizedParam.length === 3) {
+        foundCountry = allCountries.find(c => 
+          c.cca3 && c.cca3.toLowerCase() === normalizedParam
+        );
+      }
 
       if (foundCountry) {
         setCountry(foundCountry);
+        setNotFound(false);
         // Update page title
         document.title = `${foundCountry.name} - African Countries Explorer`;
       } else {
         setNotFound(true);
+        setCountry(null);
       }
     }
   }, [countryName, allCountries, loading]);
@@ -112,9 +145,6 @@ const CountryPage = () => {
 
       {/* Location Context */}
       <LocationContext country={country} />
-
-      {/* Photo Gallery */}
-      <PhotoGallery country={country} />
 
       {/* Call-to-Action Sections */}
       <CTASections country={country} />

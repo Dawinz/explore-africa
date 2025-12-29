@@ -1,12 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { extractCapitals } from '../../services/countryData';
+import { getCountryHeroImage } from '../../services/countryImages';
 
 const CountryHero = ({ country }) => {
-  const capitals = extractCapitals(country);
+  const [heroImage, setHeroImage] = useState('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop');
+  const [imageLoading, setImageLoading] = useState(true);
 
-  // Use a generic Africa landscape as background
-  const defaultHeroImage = 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=1600&h=900&fit=crop';
+  useEffect(() => {
+    const loadHeroImage = async () => {
+      if (!country || !country.name) return;
+      
+      setImageLoading(true);
+      try {
+        const imageUrl = await getCountryHeroImage(country.name);
+        setHeroImage(imageUrl);
+      } catch (error) {
+        console.error('Error loading hero image:', error);
+      } finally {
+        setImageLoading(false);
+      }
+    };
+
+    loadHeroImage();
+  }, [country?.name]);
+
+  if (!country || !country.name) {
+    return null;
+  }
+  
+  const capitals = extractCapitals(country);
 
   return (
     <section className="relative h-[450px] md:h-[550px] overflow-hidden">
@@ -15,7 +38,7 @@ const CountryHero = ({ country }) => {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('${defaultHeroImage}')`,
+            backgroundImage: `url('${heroImage}')`,
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/60" />
