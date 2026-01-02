@@ -82,36 +82,36 @@ const Header = () => {
             >
               Explore Africa
             </Link>
-            <Link
-              to="/investors"
+            <a
+              href="https://theheritageexchange.com/investors-corner/"
               className="text-white font-medium hover:text-gray-200 transition-colors duration-200 text-sm xl:text-base"
             >
               Investors corner
-            </Link>
-            <Link
-              to="/blogs"
+            </a>
+            <a
+              href="https://theheritageexchange.com/blog/"
               className="text-white font-medium hover:text-gray-200 transition-colors duration-200 text-sm xl:text-base"
             >
               Blogs and News
-            </Link>
-            <Link
-              to="/events"
+            </a>
+            <a
+              href="https://theheritageexchange.com/events/"
               className="text-white font-medium hover:text-gray-200 transition-colors duration-200 text-sm xl:text-base"
             >
               Events
-            </Link>
-            <Link
-              to="/about"
+            </a>
+            <a
+              href="https://theheritageexchange.com/about/"
               className="text-white font-medium hover:text-gray-200 transition-colors duration-200 text-sm xl:text-base"
             >
               About Us
-            </Link>
-            <Link
-              to="/contact"
+            </a>
+            <a
+              href="https://theheritageexchange.com/contact-us/"
               className="text-white font-medium hover:text-gray-200 transition-colors duration-200 text-sm xl:text-base"
             >
               Contact Us
-            </Link>
+            </a>
           </nav>
 
           {/* Sign In Button */}
@@ -151,41 +151,41 @@ const Header = () => {
               >
                 Explore Africa
               </Link>
-              <Link
-                to="/investors"
+              <a
+                href="https://theheritageexchange.com/investors-corner/"
                 className="text-white hover:text-gray-200 font-medium transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Investors corner
-              </Link>
-              <Link
-                to="/blogs"
+              </a>
+              <a
+                href="https://theheritageexchange.com/blog/"
                 className="text-white hover:text-gray-200 font-medium transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Blogs and News
-              </Link>
-              <Link
-                to="/events"
+              </a>
+              <a
+                href="https://theheritageexchange.com/events/"
                 className="text-white hover:text-gray-200 font-medium transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Events
-              </Link>
-              <Link
-                to="/about"
+              </a>
+              <a
+                href="https://theheritageexchange.com/about/"
                 className="text-white hover:text-gray-200 font-medium transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About Us
-              </Link>
-              <Link
-                to="/contact"
+              </a>
+              <a
+                href="https://theheritageexchange.com/contact-us/"
                 className="text-white hover:text-gray-200 font-medium transition-colors duration-200 py-2"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact Us
-              </Link>
+              </a>
               <button
                 className="flex items-center space-x-2 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium px-4 py-2 rounded-lg transition-all duration-200 border border-gray-300 mt-2"
                 onClick={() => setIsMobileMenuOpen(false)}
